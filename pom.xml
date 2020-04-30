@@ -2,9 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.coveo</groupId>
+  <groupId>scx.com.coveo</groupId>
   <artifactId>saml-client</artifactId>
-  <version>4.0.1-SNAPSHOT</version>
+  <version>LOCAL-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
@@ -34,13 +34,9 @@
   </scm>
 
   <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
     <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <id>bintray-streetcontxt</id>
+      <url>https://api.bintray.com/maven/streetcontxt/maven/saml-client;publish=1</url>
     </repository>
   </distributionManagement>
 
