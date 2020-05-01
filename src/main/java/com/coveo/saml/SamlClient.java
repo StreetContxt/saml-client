@@ -18,6 +18,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -78,6 +79,8 @@ import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.encryption.support.DecryptionException;
 import org.opensaml.xmlsec.encryption.support.InlineEncryptedKeyResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoSupport;
+import org.opensaml.xmlsec.keyinfo.impl.ChainingKeyInfoCredentialResolver;
+import org.opensaml.xmlsec.keyinfo.impl.CollectionKeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.impl.X509KeyInfoGeneratorFactory;
 import org.opensaml.xmlsec.signature.SignableXMLObject;
@@ -119,6 +122,7 @@ public class SamlClient {
   private long notBeforeSkew = 0L;
   private SamlIdpBinding samlBinding;
   private BasicX509Credential spCredential;
+  private List<Credential> additionalSpCredentials;
 
   /**
    * Returns the url where SAML requests should be posted.
@@ -656,6 +660,15 @@ public class SamlClient {
   }
 
   /**
+   * Set additional service provider credentials.
+   *
+   * @param credentials  additional credentials to be used when decrypting claims
+   */
+  public void setAdditionalSPCredentials(List<Credential> credentials) throws SamlException {
+    additionalSpCredentials = credentials;
+  }
+
+  /**
    * Gets attributes from the IDP Response
    *
    * @param response the response
@@ -898,7 +911,12 @@ public class SamlClient {
       Decrypter decrypter =
           new Decrypter(
               null,
-              new StaticKeyInfoCredentialResolver(spCredential),
+              new ChainingKeyInfoCredentialResolver(
+                      Arrays.asList(
+                              new StaticKeyInfoCredentialResolver(spCredential),
+                              new CollectionKeyInfoCredentialResolver(additionalSpCredentials)
+                      )
+              ),
               new InlineEncryptedKeyResolver());
 
       decrypter.setRootInNewDocument(true);
