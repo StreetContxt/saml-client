@@ -946,7 +946,7 @@ public class SamlClient {
         resolverChain.add(new StaticKeyInfoCredentialResolver(spCredential));
       }
 
-      if(additionalSpCredentials != null) {
+      if(!additionalSpCredentials.isEmpty()) {
         resolverChain.add(new CollectionKeyInfoCredentialResolver(additionalSpCredentials));
       }
 
