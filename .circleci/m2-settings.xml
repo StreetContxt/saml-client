@@ -32,7 +32,7 @@
     </activeProfiles>
     <servers>
         <server>
-            <id>bintray-streetcontxt-maven</id>
+            <id>bintray-streetcontxt</id>
             <username>${env.BINTRAY_USER}</username>
             <password>${env.BINTRAY_PASS}</password>
         </server>
