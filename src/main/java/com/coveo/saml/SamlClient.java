@@ -18,7 +18,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -649,7 +648,7 @@ public class SamlClient {
    * @param privateKey the private key
    * @throws SamlException if publicKey and privateKey don't form a valid credential
    */
-  public BasicX509Credential generateBasicX509Credential(String publicKey, String privateKey) throws SamlException {
+  private BasicX509Credential generateBasicX509Credential(String publicKey, String privateKey) throws SamlException {
     if (publicKey == null || privateKey == null) {
       throw new SamlException("No credentials provided");
     }
@@ -677,6 +676,7 @@ public class SamlClient {
    *
    * @param publicKey  the public key
    * @param privateKey the private key
+   * @throws SamlException if publicKey and privateKey don't form a valid credential
    */
   public void addAdditionalSPKey(String publicKey, String privateKey) throws SamlException {
     additionalSpCredentials.add(generateBasicX509Credential(publicKey, privateKey));
