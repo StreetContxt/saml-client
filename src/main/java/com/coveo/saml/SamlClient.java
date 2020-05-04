@@ -683,6 +683,17 @@ public class SamlClient {
   }
 
   /**
+   * Add an additional service provider certificate/key pair for decryption.
+   *
+   * @param publicKey  the public key
+   * @param privateKey the private key
+   * @throws SamlException if publicKey and privateKey don't form a valid credential
+   */
+  public void addAdditionalSPKey(X509Certificate certificate, PrivateKey privateKey) throws SamlException {
+    additionalSpCredentials.add(new BasicX509Credential(certificate, privateKey));
+  }
+
+  /**
    * Remove all additional service provider decryption certificate/key pairs.
    */
   public void clearAdditionalSPKeys() throws SamlException {
