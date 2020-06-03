@@ -16,11 +16,15 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignatureValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The type Validator utils.
  */
 class ValidatorUtils {
+
+  private static Logger logger = LoggerFactory.getLogger(ValidatorUtils.class);
 
   /**
    * Validate response.
@@ -107,6 +111,10 @@ class ValidatorUtils {
           "The NameID value is missing from the SAML response; this is likely an IDP configuration issue");
     }
 
+    if(assertion.getConditions().getNotBefore() == null) {
+      logger.warn("SamlResponse from issuer {} has no 'NotBefore' value set", responseIssuer);
+    }
+
     enforceConditions(assertion.getConditions(), now, notBeforeSkew);
   }
 
@@ -123,14 +131,16 @@ class ValidatorUtils {
     DateTime now = _now != null ? _now : DateTime.now();
 
     DateTime notBefore = conditions.getNotBefore();
-    DateTime skewedNotBefore = notBefore.minus(notBeforeSkew);
-    if (now.isBefore(skewedNotBefore)) {
-      throw new SamlException("The assertion cannot be used before " + notBefore.toString());
-    }
+    if (notBefore != null) {
+      DateTime skewedNotBefore = notBefore.minus(notBeforeSkew);
+      if (now.isBefore(skewedNotBefore)) {
+        throw new SamlException("The assertion cannot be used before " + notBefore.toString());
+      }
 
-    DateTime notOnOrAfter = conditions.getNotOnOrAfter();
-    if (now.isAfter(notOnOrAfter)) {
-      throw new SamlException("The assertion cannot be used after  " + notOnOrAfter.toString());
+      DateTime notOnOrAfter = conditions.getNotOnOrAfter();
+      if (now.isAfter(notOnOrAfter)) {
+        throw new SamlException("The assertion cannot be used after  " + notOnOrAfter.toString());
+      }
     }
   }
 
